@@ -1,0 +1,112 @@
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0 navbar-content">
+        {{adminltetags.useTag('tree',
+            [
+                "treeMode" : 'topMenu',
+                "treeData" : menus
+            ]
+        )}}
+    </ul>
+    {% if access.auth.check() %}
+        <ul class="navbar-nav ml-auto">
+            {% if modules.components.getComponentByNameForAppId('Messenger', apps.getAppInfo()['id']) %}
+                {% include modules.views.getPhalconViewPath() ~ 'layouts/common/header/messenger' %}
+            {% endif %}
+            {% include modules.views.getPhalconViewPath() ~ 'layouts/common/header/notifications' %}
+            {% include modules.views.getPhalconViewPath() ~ 'layouts/common/header/profile' %}
+        </ul>
+    {% else %}
+        {% if view.getParamsToView()['appAuth'] and access.auth.check() %}
+            {% include modules.views.getPhalconViewPath() ~ 'layouts/common/header/user' %}
+        {% endif %}
+    {% endif %}
+</div>
+{% if access.auth.check() %}
+    <script>
+/* globals BazCore */
+window.dataCollection.env.profile = { };
+window.dataCollection.env.profile.email = "{{access.auth.account()['email']}}";
+window.dataCollection.env.profile.fullName = "{{access.auth.account()['contact']['full_name']}}";
+window.dataCollection.env.profile.portrait = "{{profilePortrait}}";
+
+$('#logout').click(function(e) {
+    e.preventDefault();
+    var url = $(this).attr('href');
+
+    var postData = { };
+    var tokenKey = $('.token').attr('name');
+    var token = $('.token').val();
+    postData[tokenKey] = token;
+    $.post(url, postData, function(data) {
+        if (data.responseCode == '0') {
+            if (data.redirectUrl) {
+                window.location = data.redirectUrl;
+            } else {
+                window.location = '/';
+            }
+        }
+    }, 'json');
+});
+
+</script>
+{% endif %}
+<script>
+(function () {
+    const bnOptions = {
+        selector: "main_navbar",
+        animation: true,
+        animateIn: "animate__fadeIn",
+    };
+
+    var dropdowns = document.getElementById(bnOptions.selector).getElementsByClassName("dropdown");
+
+    Array.prototype.forEach.call(dropdowns, (item) => {
+        //add animation
+        if (bnOptions.animation) {
+            const element = item.querySelector(".dropdown-menu");
+            element.classList.add("animate__animated");
+            element.classList.add(bnOptions.animateIn);
+        }
+
+        //hover effects
+        item.addEventListener("mouseover", function () {
+            this.classList.add("show");
+            const element = this.querySelector(".dropdown-menu");
+            element.classList.add("show");
+        });
+
+        item.addEventListener("click", function (e) {
+            e.preventDefault();
+            //Do nothing
+        });
+
+        item.addEventListener("mouseout", function () {
+            this.classList.remove("show");
+            const element = this.querySelector(".dropdown-menu");
+            element.classList.remove("show");
+        });
+    });
+
+    $('.navbar-content').menuAim({
+        activate: function(row) {
+            $(row).children().addClass('show').removeClass('animate__fadeOut');
+            if( $('.navbar-content .animate__fadeIn').length == 0 ) $(row).children('ul').addClass('animate__fadeIn');
+        },
+        deactivate: function(row) {
+            $(row).children().removeClass('show');
+            if( $('li.nav-item:hover').length == 0 || $('li.nav-item:hover').is($(row)) ) {
+             $('.navbar-content').find('.animate__fadeIn').removeClass('animate__fadeIn');
+             $(row).children('ul').addClass('animate__fadeOut')
+            }
+        },
+        exitMenu: function() {
+            $('.navbar-content').find('.show').removeClass('show');
+            return true;
+        },
+        submenuDirection: 'right'
+    });
+})();
+</script>

@@ -1,0 +1,39 @@
+<!-- htmlhint tag-pair:false -->
+<footer class="main-footer">
+    <div class="row">
+        <div class="col">
+            <strong>Copyright &copy;
+                {% if assets.get('footer').getCodes()[0] is defined %}
+                    {{assets.get('footer').getCodes()[0].getContent() ~ ' -'|default('')}}
+                    {{date("Y")}}
+                {% endif %}
+                {% if assets.get('footer').getCodes()[1] is defined and assets.get('footer').getCodes()[2] is defined %}
+                    <a target="_blank" href="{{assets.get('footer').getCodes()[1].getContent()}}">{{assets.get('footer').getCodes()[2].getContent()}}</a>
+                {% endif %}
+            </strong> All rights reserved.
+        </div>
+        <div class="col text-right mr-3">
+            {% if access.auth.check() %}
+                <span class="connectivity" data-toggle="tooltip" data-placement="auto" title="Connectivity Status">
+                    <i class="fa fa-fw fa-signal connectivity-icon text-secondary"></i>
+                </span>
+                <span class="socket" data-toggle="tooltip" data-placement="auto" title="Socket Status">
+                    <i class="fa fa-fw fa-plug-circle-bolt socket-icon text-secondary"></i>
+                </span>
+            {% endif %}
+        </div>
+    </div>
+    {{assets.outputJs('footerJs')}}
+</footer>
+{% if access.auth.check() %}
+    <script>
+/* globals BazCore */
+BazCore.footer({loadFooterAt : '{{componentId}}'});
+window.dataCollection.env.accountEnv = JSON.parse('{{escaper.js(json_encode(access.auth.account()["env"]["params"][apps.getAppInfo()["id"]]))}}');
+</script>
+{% else %}
+    <script>
+/* globals BazCore */
+BazCore.footer({loadFooterAt : '{{componentId}}', guest : true});
+</script>
+{% endif %}
