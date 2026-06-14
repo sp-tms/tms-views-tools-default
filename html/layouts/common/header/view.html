@@ -15,9 +15,9 @@
             {% if activeLayout == 'topnavsidebar' %}
                 <a href="{{links.url('home')}}" class="navbar-brand contentAjaxLink" style="padding:0">
                     {% if str_starts_with(assets.get('branding').getCodes()[0].getContent(), 'public') %}
-                        <img src="{{str_replace('public/', '', links.url(assets.get('branding').getCodes()[0].getContent(), true))}}" data-rjs="3" alt="{{appName}} Logo" class="brand-image" style="height:{{assets.get('branding').getCodes()[2].getContent()}}px">
+                        <img src="{{str_replace('public/', '', links.url(assets.get('branding').getCodes()[0].getContent(), true))}}" alt="{{appName}} Logo" class="brand-image" style="height:{{assets.get('branding').getCodes()[0].getAttributes()['maxHeight']}}px">
                     {% else %}
-                        <img src="{{links.images(assets.get('branding').getCodes()[0].getContent())}}" data-rjs="3" alt="{{appName}} Logo" class="brand-image" style="height:{{assets.get('branding').getCodes()[2].getContent()}}px">
+                        <img src="{{links.images(assets.get('branding').getCodes()[0].getContent())}}" alt="{{appName}} Logo" class="brand-image" style="height:{{assets.get('branding').getCodes()[0].getattributes()['maxHeight']}}px">
                     {% endif %}
                 </a>
                 <ul class="navbar-nav">
@@ -28,9 +28,9 @@
             {% elseif activeLayout == 'topnav' or activeLayout == 'landing' %}
                 <a href="{{links.url('home')}}" class="navbar-brand contentAjaxLink" style="padding:0">
                     {% if str_starts_with(assets.get('branding').getCodes()[0].getContent(), 'public') %}
-                        <img src="{{str_replace('public/', '', links.url(assets.get('branding').getCodes()[0].getContent(), true))}}" data-rjs="3" alt="{{appName}} Logo" class="brand-image" style="height:40px">
+                        <img src="{{str_replace('public/', '', links.url(assets.get('branding').getCodes()[0].getContent(), true))}}" alt="{{appName}} Logo" class="brand-image" style="height:30px">
                     {% else %}
-                        <img src="{{links.images(assets.get('branding').getCodes()[0].getContent())}}" data-rjs="3" alt="{{appName}} Logo" class="brand-image" style="height:40px">
+                        <img src="{{links.images(assets.get('branding').getCodes()[0].getContent())}}" alt="{{appName}} Logo" class="brand-image" style="height:30px">
                     {% endif %}
                 </a>
                 {% include modules.views.getPhalconViewPath() ~ 'layouts/common/header/topnav' with ['activeLayout': activeLayout] %}
